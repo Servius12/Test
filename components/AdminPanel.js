@@ -13,8 +13,38 @@ function AdminPanel() {
       setLoading(true);
       setError(null);
       try {
-        const result = await trickleListObjects('user_registration', 100, true);
-        setRegistrations(result.items || []);
+        const client = initSupabase();
+        if (!client) {
+          setError('Supabase не настроен');
+          setRegistrations([]);
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await client
+          .from('user_registration')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (error) {
+          console.error('Error loading registrations:', error);
+          setError('Ошибка загрузки данных');
+          setRegistrations([]);
+        } else {
+          const items = (data || []).map(item => ({
+            objectId: item.id,
+            objectData: {
+              Email: item.email,
+              Username: item.username,
+              FirstName: item.first_name,
+              LastName: item.last_name,
+              RequestedRole: item.requested_role,
+              Status: item.status,
+              ApprovedRole: item.approved_role
+            }
+          }));
+          setRegistrations(items);
+        }
       } catch (error) {
         console.error('Error loading registrations:', error);
         setError('Ошибка загрузки данных');
@@ -31,10 +61,16 @@ function AdminPanel() {
       }
       
       try {
-        await trickleUpdateObject('user_registration', registration.objectId, {
-          Status: 'approved',
-          ApprovedRole: role
-        });
+        const client = initSupabase();
+        const { error } = await client
+          .from('user_registration')
+          .update({
+            status: 'approved',
+            approved_role: role
+          })
+          .eq('id', registration.objectId);
+        
+        if (error) throw error;
         alert(`Пользователь одобрен как ${role === 'client' ? 'клиент' : 'тренер'}.\nЛогин: ${registration.objectData.Username}`);
         await loadRegistrations();
       } catch (error) {
@@ -50,9 +86,13 @@ function AdminPanel() {
       }
       
       try {
-        await trickleUpdateObject('user_registration', registration.objectId, {
-          Status: 'rejected'
-        });
+        const client = initSupabase();
+        const { error } = await client
+          .from('user_registration')
+          .update({ status: 'rejected' })
+          .eq('id', registration.objectId);
+        
+        if (error) throw error;
         alert('Заявка отклонена');
         await loadRegistrations();
       } catch (error) {
@@ -68,9 +108,13 @@ function AdminPanel() {
       }
       
       try {
-        await trickleUpdateObject('user_registration', registration.objectId, {
-          Status: 'blocked'
-        });
+        const client = initSupabase();
+        const { error } = await client
+          .from('user_registration')
+          .update({ status: 'blocked' })
+          .eq('id', registration.objectId);
+        
+        if (error) throw error;
         alert('Пользователь заблокирован');
         await loadRegistrations();
       } catch (error) {
@@ -86,9 +130,13 @@ function AdminPanel() {
       }
       
       try {
-        await trickleUpdateObject('user_registration', registration.objectId, {
-          Status: 'approved'
-        });
+        const client = initSupabase();
+        const { error } = await client
+          .from('user_registration')
+          .update({ status: 'approved' })
+          .eq('id', registration.objectId);
+        
+        if (error) throw error;
         alert('Пользователь разблокирован');
         await loadRegistrations();
       } catch (error) {
@@ -97,8 +145,8 @@ function AdminPanel() {
       }
     };
 
-    const filteredRegs = filter === 'all' ? registrations : registrations.filter(r => r.objectData.Status === filter);
-    const pendingCount = registrations.filter(r => r.objectData.Status === 'pending').length;
+    const filteredRegs = filter === 'all' ? registrations : registrations.filter(r => r.objectData.Status?.toLowerCase() === filter);
+    const pendingCount = registrations.filter(r => r.objectData.Status?.toLowerCase() === 'pending').length;
 
     return (
       <div data-name="admin-panel" data-file="components/AdminPanel.js">
@@ -160,21 +208,21 @@ function AdminPanel() {
                     </p>
                   </div>
                   <span className={`px-2 py-1 text-xs rounded ${
-                    reg.objectData.Status === 'pending' ? 'bg-yellow-100 text-yellow-700' :
-                    reg.objectData.Status === 'approved' ? 'bg-green-100 text-green-700' :
-                    reg.objectData.Status === 'blocked' ? 'bg-gray-100 text-gray-700' :
+                    reg.objectData.Status?.toLowerCase() === 'pending' ? 'bg-yellow-100 text-yellow-700' :
+                    reg.objectData.Status?.toLowerCase() === 'approved' ? 'bg-green-100 text-green-700' :
+                    reg.objectData.Status?.toLowerCase() === 'blocked' ? 'bg-gray-100 text-gray-700' :
                     'bg-red-100 text-red-700'
                   }`}>
-                    {reg.objectData.Status === 'pending' ? 'Ожидание' :
-                     reg.objectData.Status === 'approved' ? 'Одобрено' : 
-                     reg.objectData.Status === 'blocked' ? 'Заблокирован' : 'Отклонено'}
+                    {reg.objectData.Status?.toLowerCase() === 'pending' ? 'Ожидание' :
+                     reg.objectData.Status?.toLowerCase() === 'approved' ? 'Одобрено' : 
+                     reg.objectData.Status?.toLowerCase() === 'blocked' ? 'Заблокирован' : 'Отклонено'}
                   </span>
                 </div>
                 <p className="text-sm mb-3">
                   Запрошена роль: <strong>{reg.objectData.RequestedRole === 'client' ? 'Клиент' : 'Тренер'}</strong>
                 </p>
                 <div className="space-y-2">
-                  {reg.objectData.Status === 'pending' && (
+                  {reg.objectData.Status?.toLowerCase() === 'pending' && (
                     <div className="grid grid-cols-3 gap-2">
                       <button 
                         onClick={() => handleApprove(reg, 'client')}
@@ -194,13 +242,13 @@ function AdminPanel() {
                     </div>
                   )}
                   
-                  {reg.objectData.Status === 'approved' && reg.objectData.ApprovedRole && (
+                  {reg.objectData.Status?.toLowerCase() === 'approved' && reg.objectData.ApprovedRole && (
                     <div className="text-xs text-center py-1 bg-blue-50 text-blue-700 rounded">
                       Роль: {reg.objectData.ApprovedRole === 'client' ? 'Клиент' : 'Тренер'}
                     </div>
                   )}
                   
-                  {reg.objectData.Status === 'approved' && (
+                  {reg.objectData.Status?.toLowerCase() === 'approved' && (
                     <button 
                       onClick={() => handleBlock(reg)}
                       className="w-full px-3 py-2 bg-gray-500 text-white rounded-lg text-xs">
@@ -208,7 +256,7 @@ function AdminPanel() {
                     </button>
                   )}
                   
-                  {reg.objectData.Status === 'blocked' && (
+                  {reg.objectData.Status?.toLowerCase() === 'blocked' && (
                     <button 
                       onClick={() => handleUnblock(reg)}
                       className="w-full px-3 py-2 bg-green-500 text-white rounded-lg text-xs">

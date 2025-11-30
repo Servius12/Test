@@ -79,15 +79,16 @@ function RegistrationForm() {
 
         const { data, error } = await client
           .from('user_registration')
-          .insert({
+          .insert([{
             email: formData.email,
             username: formData.username,
             password: formData.password,
             first_name: formData.firstName,
             last_name: formData.lastName,
             requested_role: formData.requestedRole,
-            status: 'pending'
-          })
+            status: 'pending',
+            approved_role: null
+          }])
           .select()
           .single();
         

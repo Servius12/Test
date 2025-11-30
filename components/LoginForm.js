@@ -18,28 +18,26 @@ function LoginForm() {
           return;
         }
 
-        const authResult = await signInWithEmail(credentials.email, credentials.password);
+        const client = initSupabase();
+        const { data, error } = await client
+          .from('user_registration')
+          .select('*')
+          .eq('email', credentials.email)
+          .eq('password', credentials.password)
+          .single();
         
-        if (authResult.success) {
-          const result = await trickleListObjects('user_registration', 100);
-          const user = result.items.find(r => 
-            r.objectData.Email === credentials.email &&
-            r.objectData.Status === 'approved'
-          );
-
-          if (user) {
-            sessionStorage.setItem('authenticated_user', JSON.stringify({
-              userId: user.objectId,
-              email: user.objectData.Email,
-              username: user.objectData.Username,
-              role: user.objectData.ApprovedRole
-            }));
-            window.location.href = 'index.html';
-          } else {
-            setError('Ваша заявка еще не одобрена администратором');
-          }
+        if (error || !data) {
+          setError('Неверный email или пароль');
+        } else if (data.status?.toLowerCase() !== 'approved') {
+          setError('Ваша заявка еще не одобрена администратором');
         } else {
-          setError(authResult.error || 'Неверный email или пароль');
+          sessionStorage.setItem('authenticated_user', JSON.stringify({
+            userId: data.id,
+            email: data.email,
+            username: data.username,
+            role: data.approved_role
+          }));
+          window.location.href = 'index.html';
         }
       } catch (err) {
         console.error('Login error:', err);
