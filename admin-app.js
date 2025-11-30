@@ -33,14 +33,23 @@ function AdminApp() {
   try {
     const [loading, setLoading] = React.useState(true);
 
-    React.useEffect(() => {
-      const isAdmin = sessionStorage.getItem('admin_authenticated');
-      if (!isAdmin) {
-        window.location.href = 'login.html';
-      } else {
-        setLoading(false);
+  React.useEffect(() => {
+    const isAdmin = sessionStorage.getItem('admin_authenticated');
+    if (!isAdmin) {
+      window.location.href = 'login.html';
+    } else {
+      // Admin has trainer access too
+      if (!sessionStorage.getItem('authenticated_user')) {
+        sessionStorage.setItem('authenticated_user', JSON.stringify({
+          userId: 'admin',
+          email: 'admin@admin.com',
+          username: 'admin',
+          role: 'trainer'
+        }));
       }
-    }, []);
+      setLoading(false);
+    }
+  }, []);
 
     if (loading) {
       return (

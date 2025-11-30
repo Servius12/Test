@@ -11,9 +11,15 @@ function LoginForm() {
       setError('');
 
       try {
-        // Admin login check
+        // Admin login check - admin has both admin and trainer access
         if (credentials.email === 'admin@admin.com' && credentials.password === 'admin123') {
           sessionStorage.setItem('admin_authenticated', 'true');
+          sessionStorage.setItem('authenticated_user', JSON.stringify({
+            userId: 'admin',
+            email: 'admin@admin.com',
+            username: 'admin',
+            role: 'trainer'
+          }));
           window.location.href = 'admin.html';
           return;
         }

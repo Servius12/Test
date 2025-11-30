@@ -69,13 +69,17 @@ function RegistrationForm() {
       
       setLoading(true);
       try {
-        // Save registration directly to Supabase database
         const client = initSupabase();
         if (!client) {
           alert('Ошибка подключения к базе данных');
           setLoading(false);
           return;
         }
+
+        // Клиенты автоматически одобряются, тренеры требуют одобрения
+        const isClient = formData.requestedRole === 'client';
+        const status = isClient ? 'approved' : 'pending';
+        const approvedRole = isClient ? 'client' : null;
 
         const { data, error } = await client
           .from('user_registration')
@@ -86,8 +90,8 @@ function RegistrationForm() {
             first_name: formData.firstName,
             last_name: formData.lastName,
             requested_role: formData.requestedRole,
-            status: 'pending',
-            approved_role: null
+            status: status,
+            approved_role: approvedRole
           }])
           .select()
           .single();
@@ -101,7 +105,19 @@ function RegistrationForm() {
           }
         } else {
           console.log('Registration successful:', data);
-          setSubmitted(true);
+          if (isClient) {
+            // Клиент может сразу войти
+            sessionStorage.setItem('authenticated_user', JSON.stringify({
+              userId: data.id,
+              email: data.email,
+              username: data.username,
+              role: 'client'
+            }));
+            window.location.href = 'index.html';
+          } else {
+            // Тренер должен ждать одобрения
+            setSubmitted(true);
+          }
         }
       } catch (error) {
         console.error('Error submitting registration:', error);
@@ -117,10 +133,13 @@ function RegistrationForm() {
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <div className="icon-check text-3xl text-green-600"></div>
             </div>
-            <h2 className="text-xl font-bold mb-2">Заявка отправлена!</h2>
-            <p className="text-sm text-[var(--text-secondary)]">
-              Ваша заявка на рассмотрении. Администратор свяжется с вами после одобрения.
+            <h2 className="text-xl font-bold mb-2">Заявка тренера отправлена!</h2>
+            <p className="text-sm text-[var(--text-secondary)] mb-4">
+              Ваша заявка на регистрацию тренера на рассмотрении. Администратор свяжется с вами после одобрения.
             </p>
+            <a href="login.html" className="btn-primary inline-block">
+              Вернуться к входу
+            </a>
           </div>
         </div>
       );
