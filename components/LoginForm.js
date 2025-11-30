@@ -11,6 +11,7 @@ function LoginForm() {
       setError('');
 
       try {
+        // Admin login check
         if (credentials.email === 'admin@admin.com' && credentials.password === 'admin123') {
           sessionStorage.setItem('admin_authenticated', 'true');
           window.location.href = 'admin.html';

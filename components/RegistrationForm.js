@@ -17,35 +17,40 @@ function RegistrationForm() {
     }, []);
 
     const checkExistingRegistration = async () => {
-      if (window.Telegram?.WebApp) {
-        const tg = window.Telegram.WebApp;
-        tg.ready();
-        const user = tg.initDataUnsafe?.user;
-        
-        if (user) {
-          setFormData(prev => ({
-            ...prev,
-            telegramId: user.id.toString(),
-            username: user.username || '',
-            firstName: user.first_name || '',
-            lastName: user.last_name || ''
-          }));
+      try {
+        const client = initSupabase();
+        if (!client) return;
 
-          try {
-            const result = await trickleListObjects('user_registration', 100);
-            const existing = result.items.find(r => r.objectData.TelegramId === user.id.toString());
+        if (window.Telegram?.WebApp) {
+          const tg = window.Telegram.WebApp;
+          tg.ready();
+          const user = tg.initDataUnsafe?.user;
+          
+          if (user) {
+            setFormData(prev => ({
+              ...prev,
+              username: user.username || '',
+              firstName: user.first_name || '',
+              lastName: user.last_name || ''
+            }));
+
+            const { data, error } = await client
+              .from('user_registration')
+              .select('*')
+              .eq('username', user.username)
+              .single();
             
-            if (existing) {
-              if (existing.objectData.Status === 'approved') {
+            if (data && !error) {
+              if (data.status === 'approved') {
                 window.location.href = 'index.html';
               } else {
                 setSubmitted(true);
               }
             }
-          } catch (error) {
-            console.error('Error checking registration:', error);
           }
         }
+      } catch (error) {
+        console.error('Error checking registration:', error);
       }
     };
 
@@ -64,33 +69,42 @@ function RegistrationForm() {
       
       setLoading(true);
       try {
-        const result = await signUpWithEmail(formData.email, formData.password, {
-          username: formData.username,
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          requested_role: formData.requestedRole
-        });
+        // Save registration directly to Supabase database
+        const client = initSupabase();
+        if (!client) {
+          alert('Ошибка подключения к базе данных');
+          setLoading(false);
+          return;
+        }
+
+        const { data, error } = await client
+          .from('user_registration')
+          .insert({
+            email: formData.email,
+            username: formData.username,
+            password: formData.password,
+            first_name: formData.firstName,
+            last_name: formData.lastName,
+            requested_role: formData.requestedRole,
+            status: 'pending'
+          })
+          .select()
+          .single();
         
-        if (result.success) {
-          await trickleCreateObject('user_registration', {
-            TelegramId: formData.telegramId || 'demo_' + Date.now(),
-            Email: formData.email,
-            Username: formData.username,
-            Password: formData.password,
-            FirstName: formData.firstName,
-            LastName: formData.lastName,
-            RequestedRole: formData.requestedRole,
-            Status: 'pending',
-            RegistrationDate: new Date().toISOString()
-          });
-          
-          setSubmitted(true);
+        if (error) {
+          console.error('Registration error:', error);
+          if (error.code === '23505') {
+            alert('Пользователь с таким email уже существует');
+          } else {
+            alert('Ошибка при регистрации: ' + error.message);
+          }
         } else {
-          alert(result.error || 'Ошибка при регистрации');
+          console.log('Registration successful:', data);
+          setSubmitted(true);
         }
       } catch (error) {
         console.error('Error submitting registration:', error);
-        alert('Ошибка при отправке заявки');
+        alert('Ошибка при отправке заявки: ' + error.message);
       }
       setLoading(false);
     };
