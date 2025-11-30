@@ -6,6 +6,7 @@
     <title>Панель Администратора</title>
     <meta name="description" content="Административная панель для управления пользователями">
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://resource.trickle.so/vendor_lib/unpkg/react@18/umd/react.production.min.js"></script>
     <script src="https://resource.trickle.so/vendor_lib/unpkg/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://resource.trickle.so/vendor_lib/unpkg/@babel/standalone/babel.min.js"></script>
@@ -47,6 +48,8 @@
 </head>
 <body>
     <div id="root"></div>
+    <script type="text/babel" src="utils/supabase.js"></script>
+    <script type="text/babel" src="utils/database.js"></script>
     <script type="text/babel" src="components/Header.js"></script>
     <script type="text/babel" src="components/AdminPanel.js"></script>
     <script type="text/babel" src="admin-app.js"></script>

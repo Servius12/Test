@@ -48,7 +48,7 @@
 
 ## База данных
 
-Использует Trickle Database со следующими таблицами:
+Использует **Supabase Database** со следующими таблицами:
 - `user_registration` - заявки на регистрацию с одобрением
 - `client_profile` - подробные анкеты клиентов
 - `measurement:{clientId}` - история измерений клиента
@@ -86,6 +86,20 @@
 - `login.html` - Вход в систему
 - `reset-password.html` - Восстановление пароля
 - `admin.html` - Административная панель
+
+## Развертывание
+
+### Supabase Database
+- Создайте проект на [supabase.com](https://supabase.com)
+- Выполните SQL скрипт из `SUPABASE_DATABASE_SETUP.md`
+- Настройте переменные в `utils/supabase.js`
+
+### Netlify Hosting
+- Загрузите код на GitHub
+- Подключите репозиторий к [netlify.com](https://netlify.com)
+- Автоматическое развертывание при каждом push
+
+См. полную инструкцию в `SUPABASE_DATABASE_SETUP.md`
 
 ## Дата создания
 Ноябрь 2025

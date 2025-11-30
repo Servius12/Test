@@ -1,16 +1,35 @@
 // Supabase configuration
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+const SUPABASE_URL = 'https://rrbwrlahxdkkywiswygh.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJyYndybGFoeGRra3l3aXN3eWdoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ0OTE4MjksImV4cCI6MjA4MDA2NzgyOX0.T-NU5wGEjXS_KdBzSfIzrCVWa8cQ40pbjJZ-h09vfdA';
 
 // Initialize Supabase client
 let supabaseClient = null;
 
 function initSupabase() {
-  if (typeof supabase !== 'undefined' && SUPABASE_URL && SUPABASE_ANON_KEY) {
-    supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  try {
+    // Check if Supabase library is loaded
+    if (typeof window.supabase === 'undefined') {
+      console.error('Supabase library not loaded. Make sure @supabase/supabase-js CDN is included.');
+      return null;
+    }
+    
+    // Validate configuration
+    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+      console.error('Supabase not configured. Please add your SUPABASE_URL and SUPABASE_ANON_KEY in utils/supabase.js');
+      return null;
+    }
+    
+    // Create client if not already created
+    if (!supabaseClient) {
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      console.log('Supabase client initialized successfully');
+    }
+    
     return supabaseClient;
+  } catch (error) {
+    console.error('Error initializing Supabase:', error);
+    return null;
   }
-  return null;
 }
 
 // Sign up with email

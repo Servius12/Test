@@ -7,12 +7,13 @@
     <meta name="description" content="Приложение для фитнес тренировок с персональным тренером">
     <meta name="keywords" content="фитнес, тренировки, персональный тренер, упражнения">
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://resource.trickle.so/vendor_lib/unpkg/react@18/umd/react.production.min.js"></script>
     <script src="https://resource.trickle.so/vendor_lib/unpkg/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://resource.trickle.so/vendor_lib/unpkg/@babel/standalone/babel.min.js"></script>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
-
+    
     <style type="text/tailwindcss">
     @layer theme {
         :root {
@@ -51,6 +52,8 @@
 </head>
 <body>
     <div id="root"></div>
+    <script type="text/babel" src="utils/supabase.js"></script>
+    <script type="text/babel" src="utils/database.js"></script>
     <script type="text/babel" src="utils/auth.js"></script>
     <script type="text/babel" src="components/Header.js"></script>
     <script type="text/babel" src="app.js"></script>
