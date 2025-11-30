@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель Тренера</title>
+    <meta name="description" content="Панель управления тренера - клиенты и программы">
+
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react@18/umd/react.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://resource.trickle.so/vendor_lib/unpkg/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://resource.trickle.so/vendor_lib/unpkg/lucide-static@0.516.0/font/lucide.css" rel="stylesheet">
+
+    <style type="text/tailwindcss">
+    @layer theme {
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #e0e7ff;
+            --accent-color: #8b5cf6;
+            --text-primary: #1f2937;
+            --text-secondary: #6b7280;
+            --bg-light: #f9fafb;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+        }
+    }
+
+    @layer base {
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+            color: var(--text-primary);
+            background-color: var(--bg-light);
+        }
+    }
+
+    @layer components {
+        .btn-primary {
+            @apply px-3 py-2 bg-[var(--primary-color)] text-white rounded-lg text-sm font-medium active:opacity-80 transition-all touch-manipulation;
+        }
+        .card {
+            @apply bg-white rounded-lg shadow-sm p-3;
+        }
+    }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel" src="utils/auth.js"></script>
+    <script type="text/babel" src="components/TrainerNotifications.js"></script>
+    <script type="text/babel" src="components/Header.js"></script>
+    <script type="text/babel" src="components/ClientList.js"></script>
+    <script type="text/babel" src="components/ClientProfileView.js"></script>
+    <script type="text/babel" src="components/ExerciseLibrary.js"></script>
+    <script type="text/babel" src="components/ExerciseForm.js"></script>
+    <script type="text/babel" src="components/ExercisePreview.js"></script>
+    <script type="text/babel" src="components/ProgramAssignment.js"></script>
+    <script type="text/babel" src="components/CommentSection.js"></script>
+    <script type="text/babel" src="components/WorkoutTypeSelector.js"></script>
+    <script type="text/babel" src="components/ExerciseGroupEditor.js"></script>
+    <script type="text/babel" src="components/ExerciseLibrary.js"></script>
+    <script type="text/babel" src="components/ExerciseImport.js"></script>
+    <script type="text/babel" src="components/ProgramEditor.js"></script>
+    <script type="text/babel" src="components/TemplateManager.js"></script>
+    <script type="text/babel" src="components/TemplateCreateForm.js"></script>
+    <script type="text/babel" src="trainer-app.js"></script>
+</body>
+</html>

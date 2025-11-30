@@ -1,0 +1,46 @@
+{
+  "description": "Конфигурация меню для Telegram бота",
+  "menu_button": {
+    "type": "web_app",
+    "text": "Открыть приложение",
+    "web_app": {
+      "url": "https://your-domain.com/register.html"
+    }
+  },
+  "commands": [
+    {
+      "command": "start",
+      "description": "Начать работу с ботом"
+    },
+    {
+      "command": "register",
+      "description": "Зарегистрироваться в приложении"
+    },
+    {
+      "command": "profile",
+      "description": "Мой профиль"
+    },
+    {
+      "command": "workouts",
+      "description": "Мои тренировки"
+    },
+    {
+      "command": "help",
+      "description": "Помощь"
+    }
+  ],
+  "bot_setup_instructions": {
+    "step1": "Создайте бота через @BotFather в Telegram",
+    "step2": "Получите токен бота",
+    "step3": "Настройте меню командой: /setmenubutton",
+    "step4": "Укажите URL вашего приложения",
+    "step5": "Настройте команды через /setcommands",
+    "admin_setup": "Для доступа к админ-панели используйте: https://your-domain.com/admin.html"
+  },
+  "user_flow": {
+    "new_user": "register.html -> ожидание одобрения -> index.html (выбор роли)",
+    "approved_client": "client.html",
+    "approved_trainer": "trainer.html",
+    "admin": "admin.html"
+  }
+}

@@ -1,0 +1,189 @@
+[
+  {
+    "name": "exercise_library",
+    "fields": [
+      {
+        "name": "Name",
+        "type": "text",
+        "description": "Exercise name",
+        "options": null
+      },
+      {
+        "name": "VideoUrl",
+        "type": "text",
+        "description": "Video URL for exercise technique",
+        "options": null
+      },
+      {
+        "name": "Description",
+        "type": "text",
+        "description": "Exercise description and technique",
+        "options": null
+      },
+      {
+        "name": "MuscleGroup",
+        "type": "text",
+        "description": "Target muscle group",
+        "options": [
+          "\u0413\u0440\u0443\u0434\u044c",
+          "\u0421\u043f\u0438\u043d\u0430",
+          "\u041d\u043e\u0433\u0438",
+          "\u041f\u043b\u0435\u0447\u0438",
+          "\u0420\u0443\u043a\u0438",
+          "\u041f\u0440\u0435\u0441\u0441"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "workout_program",
+    "fields": [
+      {
+        "name": "Name",
+        "type": "text",
+        "description": "Program name",
+        "options": null
+      },
+      {
+        "name": "ClientId",
+        "type": "text",
+        "description": "Client ID for this program",
+        "options": null
+      },
+      {
+        "name": "WeeksCount",
+        "type": "number",
+        "description": "Number of weeks in program",
+        "options": null
+      },
+      {
+        "name": "DaysPerWeek",
+        "type": "number",
+        "description": "Training days per week",
+        "options": null
+      },
+      {
+        "name": "Schedule",
+        "type": "array",
+        "description": "Training schedule by day with exercise groups",
+        "options": null
+      }
+    ]
+  },
+  {
+    "name": "user_registration",
+    "fields": [
+      {
+        "name": "TelegramId",
+        "type": "text",
+        "description": "Telegram user ID",
+        "options": null
+      },
+      {
+        "name": "Username",
+        "type": "text",
+        "description": "Telegram username",
+        "options": null
+      },
+      {
+        "name": "FirstName",
+        "type": "text",
+        "description": "User first name",
+        "options": null
+      },
+      {
+        "name": "LastName",
+        "type": "text",
+        "description": "User last name",
+        "options": null
+      },
+      {
+        "name": "RequestedRole",
+        "type": "text",
+        "description": "Requested role: client or trainer",
+        "options": [
+          "client",
+          "trainer"
+        ]
+      },
+      {
+        "name": "Status",
+        "type": "text",
+        "description": "Registration status",
+        "options": [
+          "pending",
+          "approved",
+          "rejected"
+        ]
+      },
+      {
+        "name": "ApprovedRole",
+        "type": "text",
+        "description": "Approved role by admin",
+        "options": [
+          "client",
+          "trainer"
+        ]
+      },
+      {
+        "name": "RegistrationDate",
+        "type": "datetime",
+        "description": "Registration date",
+        "options": null
+      }
+    ]
+  },
+  {
+    "name": "program_template",
+    "fields": [
+      {
+        "name": "Name",
+        "type": "text",
+        "description": "Template name",
+        "options": null
+      },
+      {
+        "name": "CreatorId",
+        "type": "text",
+        "description": "ID of trainer who created the template",
+        "options": null
+      },
+      {
+        "name": "WeeksCount",
+        "type": "number",
+        "description": "Number of weeks in program",
+        "options": null
+      },
+      {
+        "name": "DaysPerWeek",
+        "type": "number",
+        "description": "Training days per week",
+        "options": null
+      },
+      {
+        "name": "Schedule",
+        "type": "array",
+        "description": "Training schedule by day",
+        "options": null
+      },
+      {
+        "name": "SharedWith",
+        "type": "array",
+        "description": "Array of trainer IDs who have access to this template",
+        "options": null
+      },
+      {
+        "name": "IsPublic",
+        "type": "bool",
+        "description": "Whether template is visible to all trainers",
+        "options": null
+      },
+      {
+        "name": "CreatedAt",
+        "type": "datetime",
+        "description": "Creation date",
+        "options": null
+      }
+    ]
+  }
+]
